@@ -36,7 +36,8 @@ const config = {
   SERVER: CLOptions.server || SERVER,
   SECRET: CLOptions.secret || SECRET,
   DATA_SOURCE: CLOptions.source || DATA_SOURCE,
-  MONGO_URI: CLOptions.mongouri || MONGO_URI
+  MONGO_URI: CLOptions.mongouri || MONGO_URI,
+  MONGODB_ID_REGEX: /^[a-fA-F0-9]{24}$/
 };
 
 export default config;

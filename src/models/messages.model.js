@@ -8,7 +8,8 @@ const messagesCollection = "messages";
 const messageSchema = new mongoose.Schema({
   date: { type: Date },
   user: { type: String },
-  game: { type: mongoose.Schema.Types.ObjectId, ref: "games" }
+  body: { type: String },
+  game: { type: mongoose.Schema.Types.ObjectId }
 });
 
 messageSchema.plugin(mongoosePaginate);

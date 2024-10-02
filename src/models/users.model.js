@@ -14,14 +14,15 @@ const userSchema = new mongoose.Schema({
     default: "user",
   },
   email: { type: String, required: true },
-  phoneNumber: { type: String, default: "No specified" },
+  phone_number: { type: String, default: "No specified" },
   description: { type: String, default: "No specified" },
-  age: { type: Number, default: 18 },
-  profilePic: { type: String, default: "None" },
+  age: { type: Number, default: NaN },
+  profile_pic: { type: String, default: "None" },
   last_connection: { type: Date },
   active: { type: Boolean, default: true },
-  games: { type: Number, default: 0 },
-  wonGames: { type: Number, default: 0 }
+  played_games: { type: Number, default: 0 },
+  won_games: { type: Number, default: 0 },
+  history: { type: [{ game: mongoose.Schema.Types.ObjectId }], default: [] }
 });
 
 userSchema.plugin(mongoosePaginate);
