@@ -11,6 +11,7 @@ const gameSchema = new mongoose.Schema({
   end_date: { type: Date },
   players: { 
     type: [{
+      uid: { type: mongoose.Schema.Types.ObjectId },
       nickname: { type: String },
       land: { type: String }
     }],

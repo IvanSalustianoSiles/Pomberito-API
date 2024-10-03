@@ -43,11 +43,11 @@ class MessageClass {
             throw error;
         }
     };
-}
+};
 
-let service;
+let service = config.DATA_SOURCE === "MDB" ? import("../services/messages/message.dao.mdb.js") : undefined;
 
-if (config.DATA_SOURCE === "MDB") { service = MessageMDBService } else { throw CustomError(errorDictionary.NOT_YET_ERROR) };
+if (!service) throw CustomError(errorDictionary.NOT_YET_ERROR);
 
 const MessageController = new MessageClass(service);
 

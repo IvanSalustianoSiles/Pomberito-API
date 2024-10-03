@@ -14,7 +14,7 @@ const roundSchema = new mongoose.Schema({
   round_number: { type: Number, default: 1 },
   players: {
     type: [{
-      _id: mongoose.Schema.Types.ObjectId,
+      uid: { type: mongoose.Schema.Types.ObjectId },
       cards: { type: [{
         suit: { type: String },
         number: { type: Number }
@@ -23,9 +23,10 @@ const roundSchema = new mongoose.Schema({
     default: []
   },
   deals: { 
-    type: [{ 
-      _id: mongoose.Schema.Types.ObjectId, 
-      card: { suit: { type: String }, number: { type: Number }}
+    type: [{
+      suit: { type: String }, 
+      number: { type: Number },
+      owner: { type: mongoose.Schema.Types.ObjectId }
     }]
   },
   leftCards: {
@@ -37,7 +38,7 @@ const roundSchema = new mongoose.Schema({
   },
   preference: { 
     type: String, 
-    enum: ["none", "faso", "faca", "vino", "guita"],
+    enum: ["none", "tabaco", "faca", "vino", "guita"],
     default: "none"
   }
 });

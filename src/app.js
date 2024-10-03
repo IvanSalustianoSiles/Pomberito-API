@@ -8,7 +8,7 @@ import passport from "passport";
 import cors from "cors";
 import config, { CLOptions } from "./config.js";
 import { initSocket, addLogger, errorHandler, generateCustomResponses }  from "./services/index.js";
-import { authRoutes } from "./routes/index.js";
+import { authRoutes, gamesRoutes, messagesRoutes, roundsRoutes, usersRoutes } from "./routes/index.js";
 
 // Server init
 const app = express();
@@ -57,6 +57,13 @@ app.use(generateCustomResponses);
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/games", gamesRoutes);
+app.use("/api/messages", messagesRoutes);
+app.use("/api/rounds", roundsRoutes);
+app.use("/api/users", usersRoutes);
+
 // Static
 app.use("/static", express.static(`${config.DIRNAME}/public`));
+
+// Error
 app.use(errorHandler);

@@ -12,7 +12,7 @@ class GameMDBClass {
             const games = await this.model.find(filter);
             if (!games) throw new CustomError(errorDictionary.GENERAL_FOUND_ERROR, "Partida(s)");
             let game = {};
-            if (options.multi == true) { game = games[0]; return game }; 
+            if (options.multi == false) { game = games[0]; return game }; 
             return games;
         } catch (error) {
             throw error;

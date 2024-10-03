@@ -1,6 +1,7 @@
 import config from "../config.js";
 import { Router } from "express";
 import { CustomError, errorDictionary } from "./error.handler.js";
+import { GameController, MessageController, RoundController, UserController } from "../controllers/index.js";
 
 class CustomRouter {
   constructor() {
@@ -50,7 +51,7 @@ class CustomRouter {
         if (policies === "PUBLIC") return next();
         let user = req.session.user;
         if (!user) res.redirect("/login");
-        let role = user.role.toUpperCase();   
+        let role = user.role.toUpperCase();
         if (!policies.includes(role)) throw new CustomError(errorDictionary.AUTHORIZE_USER_ERROR, `Rol ${user.role} no permitido.`);
         req.user = user;
         return next();
@@ -68,9 +69,40 @@ class CustomRouter {
           if (typeof(req.params[id]) === "object") req.params[id] = JSON.parse(JSON.stringify(req.params[id]));
           if (!config.MONGODB_ID_REGEX.test(req.params[id])) throw new CustomError(errorDictionary.AUTHORIZE_ID_ERROR, `${req.params[id]}`);
         } 
-        if (check !== "NOCHECK" && check.compare && req.session.user.role.toUpperCase() != "ADMIN") {
-          if (check.compare == "USER" && req.params["uid"] != req.session.user._id) throw new CustomError(errorDictionary.AUTHORIZE_USER_ERROR, "No corresponde su ID");
-        }
+        switch (true) {
+          case req.params["gid"]:
+            const game = await GameController.findGames({ _id: req.params["gid"]});
+            if (!game) throw new CustomError(errorDictionary.GENERAL_FOUND_ERROR, "Partida");
+            if (check == "COMPARE" && req.session.user.role.toUpperCase() != "ADMIN") {
+              const gamePlayer = await game.players.find(player => player.uid == req.session.user._id);
+              if (!gamePlayer) throw new CustomError(errorDictionary.AUTHORIZE_USER_ERROR);
+            };
+          break;
+          case req.params["mid"]:
+            const message = await MessageController.findMessages({ _id: req.params["mid"]});
+            if (!message) throw new CustomError(errorDictionary.GENERAL_FOUND_ERROR, "Mensaje");
+            if (check == "COMPARE" && req.session.user.role.toUpperCase() != "ADMIN") {
+              const messageOwnerValidation = message.uid == req.session.user._id; 
+              if (!messageOwnerValidation) throw new CustomError(errorDictionary.AUTHORIZE_ID_ERROR); 
+            };
+          break;
+          case req.params["rid"]:
+            const round = await RoundController.findRounds({ _id: req.params["rid"]});
+            if (!round) throw new CustomError(errorDictionary.GENERAL_FOUND_ERROR, "Mano");
+            if (check == "COMPARE" && req.session.user.role.toUpperCase() != "ADMIN") {
+              const roundPlayer = await round.players.find(player => player.uid == req.session.user._id);
+              if (!roundPlayer) throw new CustomError(errorDictionary.AUTHORIZE_USER_ERROR);
+            };
+          break;
+          case req.params["uid"]:
+            const user = await UserController.findUsers({ _id: req.params["uid"]});
+            if (!user) throw new CustomError(errorDictionary.FOUND_USER_ERROR);
+            if (check == "COMPARE" && req.session.user.role.toUpperCase() != "ADMIN") {
+              const userValidation = user._id == req.session.user._id;
+              if (!userValidation) throw new CustomError(errorDictionary.AUTHORIZE_ID_ERROR);
+            };
+          break;
+        };
         return next();
       } catch (error) {
         throw error;
@@ -144,7 +176,7 @@ class CustomRouter {
     );
   };
   putById(path, policies, requiredFields, ids, check, ...callbacks) {
-    this.router.post(
+    this.router.put(
       path,
       this.routeDate(),
       this.handlePolicies(policies),
@@ -154,7 +186,7 @@ class CustomRouter {
     );
   };
   deleteById(path, policies, requiredFields, ids, check, ...callbacks) {
-    this.router.post(
+    this.router.delete(
       path,
       this.routeDate(),
       this.handlePolicies(policies),

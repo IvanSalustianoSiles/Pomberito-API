@@ -45,9 +45,11 @@ class UserClass {
     };
 }
 
-let service;
+// if (config.DATA_SOURCE === "MDB") { service = UserMDBService } else { throw CustomError(errorDictionary.NOT_YET_ERROR) };
 
-if (config.DATA_SOURCE === "MDB") { service = UserMDBService } else { throw CustomError(errorDictionary.NOT_YET_ERROR) };
+let service = config.DATA_SOURCE === "MDB" ? import("../services/users/user.dao.mdb.js") : undefined;
+
+if (!service) throw CustomError(errorDictionary.NOT_YET_ERROR);
 
 const UserController = new UserClass(service);
 

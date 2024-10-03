@@ -12,7 +12,7 @@ class MessageMDBClass {
             const messages = await this.model.find(filter);
             if (!messages) throw new CustomError(errorDictionary.GENERAL_FOUND_ERROR, "Mensaje(s)");
             let message = {};
-            if (options.multi == true) { message = messages[0]; return message }; 
+            if (options.multi == false) { message = messages[0]; return message }; 
             return messages;
         } catch (error) {
             throw error;

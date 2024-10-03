@@ -12,7 +12,7 @@ class UserMDBClass {
             const users = await this.model.find(filter);
             if (!users) throw new CustomError(errorDictionary.FOUND_USER_ERROR);
             let user = {};
-            if (options.multi == true) { user = users[0]; return user }; 
+            if (options.multi == false) { user = users[0]; return user }; 
             return users;
         } catch (error) {
             throw error;

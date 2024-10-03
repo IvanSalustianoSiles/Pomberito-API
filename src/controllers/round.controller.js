@@ -43,11 +43,11 @@ class RoundClass {
             throw error;
         }
     };
-}
+};
 
-let service;
+let service = config.DATA_SOURCE === "MDB" ? import("../services/rounds/round.dao.mdb.js") : undefined;
 
-if (config.DATA_SOURCE === "MDB") { service = RoundMDBService } else { throw CustomError(errorDictionary.NOT_YET_ERROR) };
+if (!service) throw CustomError(errorDictionary.NOT_YET_ERROR);
 
 const RoundController = new RoundClass(service);
 

@@ -12,7 +12,7 @@ class RoundMDBClass {
             const rounds = await this.model.find(filter);
             if (!rounds) throw new CustomError(errorDictionary.GENERAL_FOUND_ERROR, "Mano(s)");
             let round = {};
-            if (options.multi == true) { round = rounds[0]; return round }; 
+            if (options.multi == false) { round = rounds[0]; return round }; 
             return rounds;
         } catch (error) {
             throw error;
